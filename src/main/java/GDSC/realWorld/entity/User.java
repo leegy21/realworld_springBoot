@@ -31,4 +31,16 @@ public class User {
         this.password = userDTO.getPassword();
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
 }
