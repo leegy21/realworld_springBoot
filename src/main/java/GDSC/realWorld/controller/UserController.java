@@ -1,6 +1,7 @@
 package GDSC.realWorld.controller;
 
 import GDSC.realWorld.domain.UserDTO;
+import GDSC.realWorld.domain.UserWrapper;
 import GDSC.realWorld.entity.User;
 import GDSC.realWorld.exception.UserNotFoundException;
 import GDSC.realWorld.service.UserService;
@@ -15,19 +16,19 @@ import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/api")
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/login")
-    public ResponseEntity registerUser(@RequestBody UserDTO userDTO) {
-        User user = new User(userDTO);
+    @PostMapping("/users")
+    public ResponseEntity registerUser(@RequestBody UserWrapper userWrapper) {
+        User user = new User(userWrapper.getUser());
         userService.save(user);
         return new ResponseEntity(user, HttpStatus.OK);
     }
 
-    @PutMapping
+    @PutMapping("/user")
     public ResponseEntity updateUser(@RequestBody UserDTO userDTO) {
         try {
             User user = userService.updateUser(userDTO);
@@ -37,7 +38,7 @@ public class UserController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/profiles")
     public ResponseEntity getProfile(@RequestParam String username) {
         try {
             User user = userService.findByUsername(username);
