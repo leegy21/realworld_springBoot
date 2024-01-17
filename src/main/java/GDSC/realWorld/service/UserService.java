@@ -20,10 +20,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public User findByEmail(String email) {
-        return Optional.ofNullable(userRepository.findUserByEmail(email)).orElseThrow(UserNotFoundException::new);
-    }
-
     @Transactional
     public User updateUser(UserDTO userDTO) {
         User user = Optional.ofNullable(userRepository.findUserByEmail(userDTO.getEmail()))
@@ -33,4 +29,11 @@ public class UserService {
         user.setImage(userDTO.getImage());
         return user;
     }
+
+    public User findByUsername(String username) {
+        return Optional.ofNullable(userRepository.findUserByUsername(username))
+                .orElseThrow(UserNotFoundException::new);
+
+    }
+
 }

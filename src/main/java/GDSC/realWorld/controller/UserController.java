@@ -8,10 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,6 +32,23 @@ public class UserController {
         try {
             User user = userService.updateUser(userDTO);
             return new ResponseEntity(user, HttpStatus.OK);
+        } catch (UserNotFoundException e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity getProfile(@RequestParam String username) {
+        try {
+            User user = userService.findByUsername(username);
+            Map<String, Object> profile = new HashMap<>();
+            Map<String, Object> json = new HashMap<>();
+            profile.put("username", user.getUsername());
+            profile.put("bio", user.getBio());
+            profile.put("image", user.getImage());
+            profile.put("following", user.isDemo());
+            json.put("profile", profile);
+            return new ResponseEntity(json, HttpStatus.OK);
         } catch (UserNotFoundException e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
