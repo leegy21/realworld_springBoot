@@ -1,5 +1,6 @@
 package GDSC.realWorld.entity;
 
+import GDSC.realWorld.domain.UserDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -24,5 +25,10 @@ public class User {
     @Column(nullable = false)
     private boolean demo = false;
 
+    public User(UserDTO userDTO) {
+        this.email = userDTO.getEmail();
+        this.username = userDTO.getUsername();
+        this.password = userDTO.getPassword();
+    }
 
 }
