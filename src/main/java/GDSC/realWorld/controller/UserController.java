@@ -29,9 +29,9 @@ public class UserController {
     }
 
     @PutMapping("/user")
-    public ResponseEntity updateUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity updateUser(@RequestBody UserWrapper userWrapper) {
         try {
-            User user = userService.updateUser(userDTO);
+            User user = userService.updateUser(userWrapper.getUser());
             return new ResponseEntity(user, HttpStatus.OK);
         } catch (UserNotFoundException e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
