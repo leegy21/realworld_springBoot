@@ -5,12 +5,19 @@ import GDSC.realWorld.domain.UserWrapper;
 import GDSC.realWorld.entity.User;
 import GDSC.realWorld.exception.UserNotFoundException;
 import GDSC.realWorld.service.UserService;
+import GDSC.realWorld.session.SessionManager;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Member;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,6 +59,25 @@ public class UserController {
             return new ResponseEntity(json, HttpStatus.OK);
         } catch (UserNotFoundException e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Autowired
+    private SessionManager sessionManager;
+
+    @PostMapping("/users/login")
+    public ResponseEntity<String> loginApi(@Valid @RequestBody Map<String, Object> formdata,HttpServletResponse response){
+        
+        String email = (String) formdata.get("email");
+        String password = (String) formdata.get("password");
+
+        Member loginMemeber = userService.login(email, password);
+        
+        if(loginMemeber != null){
+            sessionManager.createSession(loginMemeber, response);
+            return ResponseEntity.ok("Login Successful");
+        } else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
 }

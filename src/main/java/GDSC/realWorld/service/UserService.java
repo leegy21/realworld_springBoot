@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Member;
 import java.util.Optional;
 
 @Service
@@ -34,6 +35,11 @@ public class UserService {
         return Optional.ofNullable(userRepository.findUserByUsername(username))
                 .orElseThrow(UserNotFoundException::new);
 
+    }
+
+    public Member login(String email, String password) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'login'");
     }
 
 }
