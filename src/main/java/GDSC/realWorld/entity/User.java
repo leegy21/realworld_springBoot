@@ -1,5 +1,7 @@
 package GDSC.realWorld.entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import GDSC.realWorld.domain.UserDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -42,6 +44,20 @@ public class User {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+
+    private List<User> following = new ArrayList<>();
+    public List<User> getFollowing() {
+        return following;
+    }
+
+    public void addFollowing(User user) {
+        following.add(user);
+    }
+
+    public void removeFollowing(User user) {
+        following.remove(user);
     }
 
 }
