@@ -23,6 +23,10 @@ public class ArticleService {
         return article;
     }
 
+    public void deleteArticle(Article article) {
+        articleRepository.delete(article);
+    }
+
     public Article findArticleBySlug(String slug) {
         return Optional.ofNullable(articleRepository.findBySlug(slug)).orElseThrow(ArticleNotFoundException::new);
     }

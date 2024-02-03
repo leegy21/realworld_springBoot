@@ -72,4 +72,16 @@ public class ArticleController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
+
+    @DeleteMapping("/{slug}")
+    public ResponseEntity deleteArticle(@PathVariable String slug) {
+        try {
+            Article foundArticle = articleService.findArticleBySlug(slug);
+            articleService.deleteArticle(foundArticle);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (ArticleNotFoundException e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+    }
 }
