@@ -3,6 +3,7 @@ package GDSC.realWorld.controller;
 import GDSC.realWorld.domain.ArticleWrapper;
 import GDSC.realWorld.entity.Article;
 import GDSC.realWorld.entity.User;
+import GDSC.realWorld.exception.ArticleNotFoundException;
 import GDSC.realWorld.service.ArticleService;
 import GDSC.realWorld.service.TagService;
 import GDSC.realWorld.service.UserService;
@@ -46,5 +47,15 @@ public class ArticleController {
         List<String> tagList = articleWrapper.getArticleDTO().getTagList();
         tagList.stream().forEach(tagName -> tagService.createTag(tagName));
         return new ResponseEntity(article, HttpStatus.OK);
+    }
+
+    @GetMapping("/{slug}")
+    public ResponseEntity getArticle(@PathVariable String slug) {
+        try {
+            Article article = articleService.findArticleBySlug(slug);
+            return new ResponseEntity(article, HttpStatus.OK);
+        } catch (ArticleNotFoundException e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
     }
 }
