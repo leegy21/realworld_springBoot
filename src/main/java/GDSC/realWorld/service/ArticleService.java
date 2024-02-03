@@ -7,8 +7,8 @@ import GDSC.realWorld.exception.ArticleNotFoundException;
 import GDSC.realWorld.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
@@ -25,5 +25,19 @@ public class ArticleService {
 
     public Article findArticleBySlug(String slug) {
         return Optional.ofNullable(articleRepository.findBySlug(slug)).orElseThrow(ArticleNotFoundException::new);
+    }
+
+    @Transactional
+    public void updateArticle(Article article, ArticleDTO articleDTO, String slug) {
+        if (articleDTO.getTitle() != null) {
+            article.setSlug(slug);
+            article.setTitle(article.getTitle());
+        }
+        if (articleDTO.getDescription() != null) {
+            article.setDescription(article.getDescription());
+        }
+        if (articleDTO.getBody() != null) {
+            article.setBody(articleDTO.getBody());
+        }
     }
 }

@@ -1,5 +1,6 @@
 package GDSC.realWorld.controller;
 
+import GDSC.realWorld.domain.ArticleDTO;
 import GDSC.realWorld.domain.ArticleWrapper;
 import GDSC.realWorld.entity.Article;
 import GDSC.realWorld.entity.User;
@@ -43,8 +44,8 @@ public class ArticleController {
         //세션에 Username를 담도록 해야됨
         String username = (String) session.getAttribute("user");
         User findUser = userService.findByUsername(username);
-        Article article = articleService.createArticle(articleWrapper.getArticleDTO(), findUser);
-        List<String> tagList = articleWrapper.getArticleDTO().getTagList();
+        Article article = articleService.createArticle(articleWrapper.getArticle(), findUser);
+        List<String> tagList = articleWrapper.getArticle().getTagList();
         tagList.stream().forEach(tagName -> tagService.createTag(tagName));
         return new ResponseEntity(article, HttpStatus.OK);
     }
@@ -54,6 +55,19 @@ public class ArticleController {
         try {
             Article article = articleService.findArticleBySlug(slug);
             return new ResponseEntity(article, HttpStatus.OK);
+        } catch (ArticleNotFoundException e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/{slug}")
+    public ResponseEntity updateArticle(@PathVariable String slug,
+                                        @RequestBody ArticleWrapper articleWrapper) {
+        ArticleDTO articleDTO = articleWrapper.getArticle();
+        try {
+            Article foundArticle = articleService.findArticleBySlug(slug);
+            articleService.updateArticle(foundArticle, articleDTO, slug);
+            return new ResponseEntity(foundArticle, HttpStatus.OK);
         } catch (ArticleNotFoundException e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }

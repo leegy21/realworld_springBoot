@@ -5,5 +5,5 @@ import lombok.Getter;
 @Getter
 public class ArticleWrapper {
 
-    private ArticleDTO articleDTO;
+    private ArticleDTO article;
 }
