@@ -1,12 +1,11 @@
 package GDSC.realWorld.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import GDSC.realWorld.domain.ArticleDTO;
+import jakarta.persistence.*;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @RequiredArgsConstructor
@@ -29,12 +28,22 @@ public class Article {
     private String body;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
     @Column(nullable = false)
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime updatedAt;
 
+    @ManyToOne
+    @JoinColumn(name = "authorId")
     @Column(nullable = false)
-    private int authorId;
+    private User user;
 
+    public Article(ArticleDTO articleDTO, User user) {
+        this.title = articleDTO.getTitle();
+        this.description = articleDTO.getDescription();
+        this.body = articleDTO.getBody();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+        this.user = user;
+    }
 
 }

@@ -1,19 +1,20 @@
 package GDSC.realWorld.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
 @Getter
 public class ArticleTags {
 
-    @Id @GeneratedValue
-    private int articleId;
+    @Id
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "articleId")
+    private Article article;
 
-    @Id @GeneratedValue
-    private int tagId;
+    @Id
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "tagId")
+    private Tag tag;
 
 }
