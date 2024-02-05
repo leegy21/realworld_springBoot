@@ -3,9 +3,11 @@ package GDSC.realWorld.controller;
 import GDSC.realWorld.domain.ArticleDTO;
 import GDSC.realWorld.domain.ArticleWrapper;
 import GDSC.realWorld.entity.Article;
+import GDSC.realWorld.entity.Tag;
 import GDSC.realWorld.entity.User;
 import GDSC.realWorld.exception.ArticleNotFoundException;
 import GDSC.realWorld.service.ArticleService;
+import GDSC.realWorld.service.ArticleTagService;
 import GDSC.realWorld.service.TagService;
 import GDSC.realWorld.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,6 +31,7 @@ public class ArticleController {
     private final UserService userService;
     private final ArticleService articleService;
     private final TagService tagService;
+    private final ArticleTagService articleTagService;
 
     @GetMapping
     public ResponseEntity listArticles(@RequestParam String tag,
@@ -42,19 +47,30 @@ public class ArticleController {
                                         HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         //세션에 Username를 담도록 해야됨
+
         String username = (String) session.getAttribute("user");
         User findUser = userService.findByUsername(username);
+
         Article article = articleService.createArticle(articleWrapper.getArticle(), findUser);
-        List<String> tagList = articleWrapper.getArticle().getTagList();
-        tagList.stream().forEach(tagName -> tagService.createTag(tagName));
-        return new ResponseEntity(article, HttpStatus.OK);
+
+        List<Tag> tagList = tagService.createTagListByTagNameList(articleWrapper.getArticle().getTagList());
+        articleTagService.createArticleTagByTagListAndArticle(article, tagList);
+
+        ArticleDTO articleDTO = new ArticleDTO(article, tagList);
+        Map<String, Object> response = new HashMap<>();
+        response.put("article", articleDTO);
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 
     @GetMapping("/{slug}")
     public ResponseEntity getArticle(@PathVariable String slug) {
         try {
             Article article = articleService.findArticleBySlug(slug);
-            return new ResponseEntity(article, HttpStatus.OK);
+            List<Tag> tagList = articleTagService.getTagListByArticle(article);
+            ArticleDTO articleResponse = new ArticleDTO(article, tagList);
+            Map<String, Object> response = new HashMap<>();
+            response.put("article", articleResponse);
+            return new ResponseEntity(response, HttpStatus.OK);
         } catch (ArticleNotFoundException e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
@@ -67,6 +83,9 @@ public class ArticleController {
         try {
             Article foundArticle = articleService.findArticleBySlug(slug);
             articleService.updateArticle(foundArticle, articleDTO, slug);
+            ArticleDTO articleResponse = new ArticleDTO(foundArticle, articleTagService.getTagListByArticle(foundArticle));
+            Map<String, Object> response = new HashMap<>();
+            response.put("article", articleResponse);
             return new ResponseEntity(foundArticle, HttpStatus.OK);
         } catch (ArticleNotFoundException e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);

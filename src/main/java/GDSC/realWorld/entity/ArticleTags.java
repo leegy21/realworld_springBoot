@@ -2,9 +2,11 @@ package GDSC.realWorld.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Entity
 @Getter
+@RequiredArgsConstructor
 public class ArticleTags {
 
     @Id
@@ -17,4 +19,8 @@ public class ArticleTags {
     @JoinColumn(name = "tagId")
     private Tag tag;
 
+    public ArticleTags(Article article, Tag tag) {
+        this.article = article;
+        this.tag = tag;
+    }
 }

@@ -5,15 +5,23 @@ import GDSC.realWorld.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TagService {
 
     private final TagRepository tagRepository;
 
-    public void createTag(String name) {
-        Tag tag = new Tag(name);
-        tagRepository.save(tag);
+    public List<Tag> createTagListByTagNameList(List<String> tagNameList) {
+        List<Tag> tagList = new ArrayList<>();
+        tagNameList.stream().forEach(tagName -> {
+            Tag tag = new Tag(tagName);
+            tagList.add(tag);
+            tagRepository.save(tag);
+        });
+        return tagList;
     }
 
 }

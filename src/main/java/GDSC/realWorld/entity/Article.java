@@ -35,7 +35,10 @@ public class Article {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @ManyToOne
+    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
+    private List<ArticleTags> articleTags;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "authorId")
     @Column(nullable = false)
     private User user;
