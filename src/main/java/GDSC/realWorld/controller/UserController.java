@@ -4,16 +4,21 @@ import GDSC.realWorld.domain.UserDTO;
 import GDSC.realWorld.domain.UserWrapper;
 import GDSC.realWorld.entity.User;
 import GDSC.realWorld.exception.UserNotFoundException;
+import GDSC.realWorld.login.LoginForm;
+import GDSC.realWorld.login.SessionConst;
 import GDSC.realWorld.service.UserService;
-import GDSC.realWorld.session.SessionManager;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.aspectj.apache.bcel.generic.LOOKUPSWITCH;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,24 +67,35 @@ public class UserController {
         }
     }
 
-    @Autowired
-    private SessionManager sessionManager;
-
     @PostMapping("/users/login")
-    public ResponseEntity<String> loginApi(@Valid @RequestBody Map<String, Object> formdata,HttpServletResponse response){
-        
-        String email = (String) formdata.get("email");
-        String password = (String) formdata.get("password");
+        public String loginV3(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult, HttpServletResponse response, HttpServletRequest request) {
+            if (bindingResult.hasErrors()) {
+            return "login/loginForm";
+            }
 
-        Member loginMemeber = userService.login(email, password);
-        
-        if(loginMemeber != null){
-            sessionManager.createSession(loginMemeber, response);
-            return ResponseEntity.ok("Login Successful");
-        } else{
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        Member loginMember = userService.login(form.getLoginId(), form.getPassword());
+        if (loginMember == null) {
+            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
+            return "login/loginForm";
         }
+
+        
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
+
+        return "redirect:/";
     }
+
+    @PostMapping("/users/logout")
+    public String logoutV3(HttpServletResponse response, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        return "redirect:/";
+    }
+
 
     @PostMapping("/profiles/{username}/follow")
     public ResponseEntity followUser(@PathVariable String username, @RequestParam String usernameToFollow) {
@@ -93,9 +109,9 @@ public class UserController {
     }
 
     @DeleteMapping("/profiles/{username}/follow")
-    public ResponseEntity unfollowUser(@PathVariable String username, @RequestParam String userToUnfollow) {
+    public ResponseEntity unfollowUser(@PathVariable String username, @RequestParam String usernameToUnfollow) {
         try {
-            userService.unfollowUser(username, userToUnfollow);
+            userService.unfollowUser(username, usernameToUnfollow);
     
             return getProfile(username);
         } catch (UserNotFoundException e) {
