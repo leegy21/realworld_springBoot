@@ -56,7 +56,7 @@ public class ArticleController {
         List<Tag> tagList = tagService.createTagListByTagNameList(articleWrapper.getArticle().getTagList());
         articleTagService.createArticleTagByTagListAndArticle(article, tagList);
 
-        ArticleDTO articleDTO = new ArticleDTO(article, tagList);
+        ArticleDTO articleDTO = new ArticleDTO(article, tagService.getTagNameListByTagList(tagList));
         Map<String, Object> response = new HashMap<>();
         response.put("article", articleDTO);
         return new ResponseEntity(response, HttpStatus.OK);
@@ -66,8 +66,8 @@ public class ArticleController {
     public ResponseEntity getArticle(@PathVariable String slug) {
         try {
             Article article = articleService.findArticleBySlug(slug);
-            List<Tag> tagList = articleTagService.getTagListByArticle(article);
-            ArticleDTO articleResponse = new ArticleDTO(article, tagList);
+            List<String> tagNameList = articleTagService.findTagNameListByArticle(article);
+            ArticleDTO articleResponse = new ArticleDTO(article, tagNameList);
             Map<String, Object> response = new HashMap<>();
             response.put("article", articleResponse);
             return new ResponseEntity(response, HttpStatus.OK);
@@ -83,7 +83,7 @@ public class ArticleController {
         try {
             Article foundArticle = articleService.findArticleBySlug(slug);
             articleService.updateArticle(foundArticle, articleDTO, slug);
-            ArticleDTO articleResponse = new ArticleDTO(foundArticle, articleTagService.getTagListByArticle(foundArticle));
+            ArticleDTO articleResponse = new ArticleDTO(foundArticle, articleTagService.findTagNameListByArticle(foundArticle));
             Map<String, Object> response = new HashMap<>();
             response.put("article", articleResponse);
             return new ResponseEntity(foundArticle, HttpStatus.OK);

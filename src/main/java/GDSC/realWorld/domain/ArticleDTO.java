@@ -21,7 +21,7 @@ public class ArticleDTO {
     private LocalDateTime updatedAt;
     private User author;
 
-    public ArticleDTO(Article article, List<Tag> tagList) {
+    public ArticleDTO(Article article, List<String> tagNameList) {
         this.slug = article.getSlug();
         this.title = article.getTitle();
         this.description = article.getDescription();
@@ -29,6 +29,6 @@ public class ArticleDTO {
         this.createdAt = article.getCreatedAt();
         this.updatedAt = article.getUpdatedAt();
         this.author = article.getUser();
-        this.tagList = Tag.getTagNameList(tagList);
+        this.tagList = tagNameList;
     }
 }
