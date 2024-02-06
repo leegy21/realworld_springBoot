@@ -101,7 +101,7 @@ public class UserController {
     public ResponseEntity followUser(@PathVariable String username, @RequestParam String usernameToFollow) {
         try {
             userService.followUser(username, usernameToFollow);
-        
+
             return getProfile(usernameToFollow);
         } catch (UserNotFoundException e) {
             return ResponseEntity.notFound().build();
