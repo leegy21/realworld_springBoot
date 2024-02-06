@@ -13,7 +13,7 @@ import GDSC.realWorld.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -33,14 +33,17 @@ public class ArticleController {
     private final TagService tagService;
     private final ArticleTagService articleTagService;
 
-    @GetMapping
-    public ResponseEntity listArticles(@RequestParam String tag,
-                                       @RequestParam String author,
-                                       @RequestParam String favorited,
-                                       @RequestParam @DefaultValue("20") int limit,
-                                       @RequestParam @DefaultValue("0") int offset) {
-        return null;
+    @GetMapping("/articles")
+    public ResponseEntity<Page<ArticleDTO>> getArticles(
+            @RequestParam(required = false) String tagName,
+            @RequestParam(required = false) String username,
+            @RequestParam(defaultValue = "0") int offset,
+            @RequestParam(defaultValue = "20") int limit) {
+
+        Page<ArticleDTO> articles = articleService.getListArticles(tagName, username, offset, limit);
+        return new ResponseEntity(articles, HttpStatus.OK);
     }
+
 
     @PostMapping
     public ResponseEntity createArticle(@RequestBody ArticleWrapper articleWrapper,
