@@ -41,7 +41,11 @@ public class ArticleController {
             @RequestParam(defaultValue = "20") int limit) {
 
         Page<ArticleDTO> articles = articleService.getListArticles(tagName, username, offset, limit);
-        return new ResponseEntity(articles, HttpStatus.OK);
+        Map<String, Object> response = new HashMap<>();
+        response.put("articles", articles.getContent());
+        response.put("articlesCount", articles.getTotalElements());
+
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 
 
