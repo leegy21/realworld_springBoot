@@ -46,7 +46,7 @@ public class User {
         this.image = image;
     }
 
-
+    
     private List<User> following = new ArrayList<>();
     public List<User> getFollowing() {
         return following;
@@ -58,6 +58,10 @@ public class User {
 
     public void removeFollowing(User user) {
         following.remove(user);
+    }
+
+    public User(String email2, String password2) {
+        //TODO Auto-generated constructor stub
     }
 
 }

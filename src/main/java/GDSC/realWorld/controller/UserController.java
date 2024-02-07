@@ -68,22 +68,21 @@ public class UserController {
     }
 
     @PostMapping("/users/login")
-        public String loginV3(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult, HttpServletResponse response, HttpServletRequest request) {
+        public ResponseEntity<Object> loginV3(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult, HttpServletResponse response, HttpServletRequest request) {
             if (bindingResult.hasErrors()) {
-            return "login/loginForm";
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
             }
 
-        Member loginMember = userService.login(form.getLoginId(), form.getPassword());
+        Member loginMember = userService.getMemberByEmailAndPassword(form.getEmail(), form.getPassword());
         if (loginMember == null) {
-            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
-            return "login/loginForm";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        
         HttpSession session = request.getSession();
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
-
-        return "redirect:/";
+        
+        User user = new User(((UserDTO) loginMember).getEmail(), ((UserDTO) loginMember).getPassword());
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping("/users/logout")
