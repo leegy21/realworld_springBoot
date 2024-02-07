@@ -41,7 +41,12 @@ public class UserService {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'login'");
     }
-
+    
+    public Member getMemberByEmailAndPassword(String email, String password) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getMemberByEmailAndPassword'");
+    }
+    
     public void followUser(String usernameToFollow, String followerUsername) {
         User userToFollow = findByUsername(usernameToFollow);
         User follower = findByUsername(followerUsername);
@@ -57,4 +62,6 @@ public class UserService {
         follower.getFollowing().remove(userToUnfollow);
         save(follower);
     }
+
+    
 }
