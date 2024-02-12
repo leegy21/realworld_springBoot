@@ -31,4 +31,8 @@ public class ArticleDTO {
         this.author = article.getUser();
         this.tagList = tagNameList;
     }
+
+    public ArticleDTO(Article article, User user) {
+        //TODO Auto-generated constructor stub
+    }
 }

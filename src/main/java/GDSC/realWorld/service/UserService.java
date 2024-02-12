@@ -4,6 +4,7 @@ import GDSC.realWorld.domain.UserDTO;
 import GDSC.realWorld.entity.User;
 import GDSC.realWorld.exception.UserNotFoundException;
 import GDSC.realWorld.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,6 +62,11 @@ public class UserService {
     
         follower.getFollowing().remove(userToUnfollow);
         save(follower);
+    }
+
+    public User getCurrentUser(HttpServletRequest request) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getCurrentUser'");
     }
 
     
