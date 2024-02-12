@@ -2,12 +2,18 @@ package GDSC.realWorld.controller;
 
 import GDSC.realWorld.domain.ArticleDTO;
 import GDSC.realWorld.domain.ArticleWrapper;
+import GDSC.realWorld.domain.CommentDTO;
+import GDSC.realWorld.domain.CommentWrapper;
 import GDSC.realWorld.entity.Article;
+import GDSC.realWorld.entity.Comment;
+import GDSC.realWorld.entity.Favorite;
 import GDSC.realWorld.entity.Tag;
 import GDSC.realWorld.entity.User;
 import GDSC.realWorld.exception.ArticleNotFoundException;
 import GDSC.realWorld.service.ArticleService;
 import GDSC.realWorld.service.ArticleTagService;
+import GDSC.realWorld.service.CommentService;
+import GDSC.realWorld.service.FavoriteService;
 import GDSC.realWorld.service.TagService;
 import GDSC.realWorld.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,10 +21,12 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +40,8 @@ public class ArticleController {
     private final ArticleService articleService;
     private final TagService tagService;
     private final ArticleTagService articleTagService;
+    private final CommentService commentService;
+    private final FavoriteService favoriteService;
 
     @GetMapping("/articles")
     public ResponseEntity<Page<ArticleDTO>> getArticles(
@@ -110,4 +120,81 @@ public class ArticleController {
         }
 
     }
+
+    @PostMapping("/{slug}/comments")
+    public ResponseEntity addCommentToArticle(@PathVariable String slug, @RequestBody CommentWrapper commentWrapper){
+        CommentDTO commentDTO = commentWrapper.getComment();
+        
+        try{
+            Comment savedComment = commentService.addCommentToArticle(slug,commentDTO);
+            CommentDTO savedCommentDTO = new CommentDTO(savedComment);
+            Map<String, CommentDTO> response = new HashMap<>();
+            response.put("comment", savedCommentDTO);
+            return new ResponseEntity(savedComment, HttpStatus.CREATED);
+        } catch(ArticleNotFoundException e){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/{slug}/comments")
+    public ResponseEntity<Map<String, List<CommentDTO>>> getCommentsByArticleSlug(@PathVariable String slug) {
+        List<Comment> comments = commentService.getCommentsByArticleSlug(slug);
+        List<CommentDTO> commentDTOs = new ArrayList<>();
+
+        for (Comment comment : comments) {
+            CommentDTO commentDTO = new CommentDTO(comment);
+            commentDTOs.add(commentDTO);
+        }
+
+        Map<String, List<CommentDTO>> response = new HashMap<>();
+        response.put("comments", commentDTOs);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{slug}/comments/{id}")
+    public ResponseEntity deleteComment(@PathVariable String slug){
+        try {
+            Article foundArticle = articleService.findArticleBySlug(slug);
+            articleService.deleteArticle(foundArticle);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (ArticleNotFoundException e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PostMapping("/{slug}/favorite")
+    public ResponseEntity<Map<String, ArticleDTO>> favoriteArticle(@PathVariable String slug, HttpServletRequest request) {
+        User user = userService.getCurrentUser(request);
+        Article article = articleService.findArticleBySlug(slug);
+    
+        Favorite existingFavorite = favoriteService.findByUserAndArticle(user, article);
+        if (existingFavorite == null) {
+            favoriteService.addFavorite(user, article);
+        }
+    
+        ArticleDTO articleDTO = new ArticleDTO(article, user);
+        Map<String, ArticleDTO> response = new HashMap<>();
+        response.put("article", articleDTO);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    
+
+    @DeleteMapping("/{slug}/favorite")
+    public ResponseEntity<Map<String, ArticleDTO>> unfavoriteArticle(@PathVariable String slug, HttpServletRequest request) {
+        User user = userService.getCurrentUser(request);
+        Article article = articleService.findArticleBySlug(slug);
+
+        Favorite existingFavorite = favoriteService.findByUserAndArticle(user, article);
+        if (existingFavorite != null) {
+            favoriteService.removeFavorite(user, article);
+        }
+
+        article = articleService.findArticleBySlug(slug);
+        ArticleDTO articleDTO = new ArticleDTO(article, user);
+
+        Map<String, ArticleDTO> response = new HashMap<>();
+        response.put("article", articleDTO);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    
 }
