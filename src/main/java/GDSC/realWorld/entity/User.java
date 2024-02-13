@@ -45,9 +45,10 @@ public class User {
     public void setImage(String image) {
         this.image = image;
     }
-
     
     private List<User> following = new ArrayList<>();
+    //DB에는 List 형식의 열을 생성하지 못함
+
     public List<User> getFollowing() {
         return following;
     }

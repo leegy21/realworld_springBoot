@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Setter @Getter
+@Setter
+@Getter
 @RequiredArgsConstructor
 public class Article {
 
@@ -39,8 +40,7 @@ public class Article {
     private List<ArticleTags> articleTags;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "authorId")
-    @Column(nullable = false)
+    @JoinColumn(name = "authorId", nullable = false)
     private User user;
 
     public Article(ArticleDTO articleDTO, User user) {
