@@ -53,7 +53,7 @@ public class UserService {
     public void followUser(String usernameToFollow, String followerUsername) {
         User userToFollow = findByUsername(usernameToFollow);
         User follower = findByUsername(followerUsername);
-    
+
         follower.getFollowing().add(userToFollow);
         save(follower);
     }
@@ -61,7 +61,7 @@ public class UserService {
     public void unfollowUser(String usernameToUnfollow, String followerUsername) {
         User userToUnfollow = findByUsername(usernameToUnfollow);
         User follower = findByUsername(followerUsername);
-    
+
         follower.getFollowing().remove(userToUnfollow);
         save(follower);
     }

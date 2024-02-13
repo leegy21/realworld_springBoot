@@ -36,8 +36,7 @@ public class Comment {
     private String body;
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "authorId")
-    @Column(nullable = false)
+    @JoinColumn(name = "authorId", nullable = false)
     private User user;
 
     public Comment(CommentDTO commentDTO, User user) {
