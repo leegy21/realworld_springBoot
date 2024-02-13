@@ -52,10 +52,12 @@ public class Comment {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getid'");
     }
+    //해당 부분 구현에 대한 확인 필요
 
     public void setArticle(Article article) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setArticle'");
     }
+    //해당 부분 구현에 대한 확인 필요
 
 }

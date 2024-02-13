@@ -42,11 +42,13 @@ public class UserService {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'login'");
     }
+    //로그인 구현 되지 않음
     
     public Member getMemberByEmailAndPassword(String email, String password) {
             // TODO Auto-generated method stub
             throw new UnsupportedOperationException("Unimplemented method 'getMemberByEmailAndPassword'");
     }
+    //엔티티는 User인데 왜 Member로 사용하였는지에 대한 설명 필요 + 구현이 되지 않음
     
     public void followUser(String usernameToFollow, String followerUsername) {
         User userToFollow = findByUsername(usernameToFollow);
@@ -68,6 +70,7 @@ public class UserService {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getCurrentUser'");
     }
+    //구현이 되지 않음
 
     
 }

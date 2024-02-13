@@ -11,6 +11,8 @@ import GDSC.realWorld.entity.User;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     Comment findBySlug(String slug);
+    //Comment 엔티티에는 Slug 필드가 없는데 어떻게 찾는 것인지?
+
     Page<Comment> findByUser(User user, Pageable pageable);
 
 }
