@@ -17,14 +17,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
-    private ArticleRepository articleRepository;
+    private final ArticleRepository articleRepository;
+    //final로 선언해야 @RequiredArgsConstructor에 의해 생성자가 만들어져서 Bean 주입 받음
 
     public Comment addCommentToArticle(String slug, CommentDTO commentDTO) throws ArticleNotFoundException{
         Article article = articleRepository.findBySlug(slug);
         if (article == null){
             throw new ArticleNotFoundException();
         }
-                
         Comment comment = new Comment();
         comment.setBody(commentDTO.getBody());
         comment.setArticle(article);
@@ -36,6 +36,11 @@ public class CommentService {
 
     public List<Comment> getCommentsByArticleSlug(String slug) {
         return (List<Comment>) commentRepository.findBySlug(slug);
+        /*
+        - Comment 엔티티에는 Slug 필드가 없음
+        - 해당 findBySlug은 단일 Comment를 Return 하는데 왜 List로 선언 되어 있는 것인지?
+         */
+
     }
 
     public void deleteComment(Comment comment) {

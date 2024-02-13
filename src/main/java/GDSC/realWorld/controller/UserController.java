@@ -12,14 +12,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import org.aspectj.apache.bcel.generic.LOOKUPSWITCH;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Member;
@@ -68,20 +64,22 @@ public class UserController {
     }
 
     @PostMapping("/users/login")
-        public ResponseEntity<Object> loginV3(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult, HttpServletResponse response, HttpServletRequest request) {
-            if (bindingResult.hasErrors()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-            }
+    public ResponseEntity<Object> loginV3(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult, HttpServletRequest request) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
 
         Member loginMember = userService.getMemberByEmailAndPassword(form.getEmail(), form.getPassword());
+        //Member로 사용한 이유가 무엇인지
         if (loginMember == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
         HttpSession session = request.getSession();
-        session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
-        
+        session.setAttribute(SessionConst.LOGIN_USER, loginMember);
+
         User user = new User(((UserDTO) loginMember).getEmail(), ((UserDTO) loginMember).getPassword());
+        //User 객체를 새로 만드는게 아니라 login 단계에서 User를 찾아와서 반환해야 될듯
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -94,6 +92,7 @@ public class UserController {
 
         return "redirect:/";
     }
+    //로그아웃은 명세에 존재하지 않음
 
 
     @PostMapping("/profiles/{username}/follow")
@@ -106,15 +105,18 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+    //follow 엔티티 미존재
 
     @DeleteMapping("/profiles/{username}/follow")
     public ResponseEntity unfollowUser(@PathVariable String username, @RequestParam String usernameToUnfollow) {
         try {
             userService.unfollowUser(username, usernameToUnfollow);
-    
+
             return getProfile(username);
         } catch (UserNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
+    //follow 엔티티 미존재
 }
+
