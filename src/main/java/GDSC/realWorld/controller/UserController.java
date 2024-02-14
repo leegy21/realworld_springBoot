@@ -69,8 +69,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        Member loginMember = userService.getMemberByEmailAndPassword(form.getEmail(), form.getPassword());
-        //Member로 사용한 이유가 무엇인지
+        User loginMember = userService.getMemberByEmailAndPassword(form.getEmail(), form.getPassword());
+
         if (loginMember == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -78,21 +78,8 @@ public class UserController {
         HttpSession session = request.getSession();
         session.setAttribute(SessionConst.LOGIN_USER, loginMember);
 
-        User user = new User(((UserDTO) loginMember).getEmail(), ((UserDTO) loginMember).getPassword());
-        //User 객체를 새로 만드는게 아니라 login 단계에서 User를 찾아와서 반환해야 될듯
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(loginMember, HttpStatus.OK);
     }
-
-    @PostMapping("/users/logout")
-    public String logoutV3(HttpServletResponse response, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-
-        return "redirect:/";
-    }
-    //로그아웃은 명세에 존재하지 않음
 
 
     @PostMapping("/profiles/{username}/follow")
@@ -105,8 +92,6 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
-    //follow 엔티티 미존재
-
     @DeleteMapping("/profiles/{username}/follow")
     public ResponseEntity unfollowUser(@PathVariable String username, @RequestParam String usernameToUnfollow) {
         try {
@@ -117,6 +102,5 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
-    //follow 엔티티 미존재
 }
 

@@ -39,6 +39,10 @@ public class Comment {
     @JoinColumn(name = "authorId", nullable = false)
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "article_id")
+    private Article article;
+
     public Comment(CommentDTO commentDTO, User user) {
         this.id = UUID.randomUUID().toString();
         this.body = commentDTO.getBody();
@@ -48,15 +52,10 @@ public class Comment {
     }
 
     public String getid() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getid'");
+        return this.id;
     }
-    //해당 부분 구현에 대한 확인 필요
 
     public void setArticle(Article article) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setArticle'");
+        this.article = article;
     }
-    //해당 부분 구현에 대한 확인 필요
-
 }

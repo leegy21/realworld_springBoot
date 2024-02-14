@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FavoriteService {
     @Autowired
-    private FavoriteRepository favoriteRepository;
+    private final FavoriteRepository favoriteRepository;
     /*
     @RequiredArgsConstructor 사용 시, 생성자 주입이 적절해보임
     ex) private final FavoriteRepository favoriteRepository;
@@ -39,8 +39,6 @@ public class FavoriteService {
     }
 
     public Favorite findByUserAndArticle(User user, Article article) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findByUserAndArticle'");
+        return favoriteRepository.findByUserAndArticle(user, article);
     }
-    //이 부분 구현에 대한 확인 필요 - 사용처가 2곳인데 구현이 되지 않음
 }

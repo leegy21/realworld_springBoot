@@ -5,7 +5,10 @@ import GDSC.realWorld.entity.User;
 import GDSC.realWorld.exception.UserNotFoundException;
 import GDSC.realWorld.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +20,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public void save(User user) {
         userRepository.save(user);
@@ -38,17 +42,26 @@ public class UserService {
 
     }
 
-    public Member login(String email, String password) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'login'");
+    public User login(String email, String password) {
+        User user = userRepository.findUserByEmail(email);
+
+        if(user == null){
+            throw new UserNotFoundException();
+        }
+
+        return user;
     }
-    //로그인 구현 되지 않음
     
-    public Member getMemberByEmailAndPassword(String email, String password) {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'getMemberByEmailAndPassword'");
+    public User getMemberByEmailAndPassword(String email, String password) {
+            User user = userRepository.findUserByEmail(email);
+
+            if (user != null && passwordEncoder.matches(password, user.getPassword())){
+                    return user;
+            } else {
+                return null;
+            }
     }
-    //엔티티는 User인데 왜 Member로 사용하였는지에 대한 설명 필요 + 구현이 되지 않음
+
     
     public void followUser(String usernameToFollow, String followerUsername) {
         User userToFollow = findByUsername(usernameToFollow);
@@ -67,10 +80,14 @@ public class UserService {
     }
 
     public User getCurrentUser(HttpServletRequest request) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCurrentUser'");
-    }
-    //구현이 되지 않음
+        
+        HttpSession session = request.getSession(false);
 
-    
+        if(session != null){
+            User user = (User) session.getAttribute("currentUser");
+            return user;
+        } else {
+            return null;
+        }
+    }
 }
