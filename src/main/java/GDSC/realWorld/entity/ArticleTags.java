@@ -9,13 +9,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ArticleTags {
 
-    @Id
+    @EmbeddedId
+    private ArticleTagId id;
+
     @ManyToOne(cascade = CascadeType.ALL)
+    @MapsId("articleId")
     @JoinColumn(name = "articleId")
     private Article article;
 
-    @Id
     @ManyToOne(cascade = CascadeType.ALL)
+    @MapsId("tagId")
     @JoinColumn(name = "tagId")
     private Tag tag;
 

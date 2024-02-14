@@ -5,10 +5,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 @Slf4j
-public class LoginInterceptor implements HandlerInterceptor {
+public class LoginInterceptor implements  HandlerInterceptor {
 
     public static final String LOG_ID = "logId";
     //이 부분 필드가 세션 저장 한 Key 값이랑 달라서 이 값으론 불러오지 못함

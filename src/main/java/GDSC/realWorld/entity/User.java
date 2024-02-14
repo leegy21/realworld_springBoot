@@ -46,20 +46,20 @@ public class User {
         this.image = image;
     }
     
-    private List<User> following = new ArrayList<>();
-    //DB에는 List 형식의 열을 생성하지 못함
-
-    public List<User> getFollowing() {
-        return following;
-    }
-
-    public void addFollowing(User user) {
-        following.add(user);
-    }
-
-    public void removeFollowing(User user) {
-        following.remove(user);
-    }
+//    private List<User> following = new ArrayList<>();
+//    //DB에는 List 형식의 열을 생성하지 못함
+//
+//    public List<User> getFollowing() {
+//        return following;
+//    }
+//
+//    public void addFollowing(User user) {
+//        following.add(user);
+//    }
+//
+//    public void removeFollowing(User user) {
+//        following.remove(user);
+//    }
 
     public User(String email2, String password2) {
         //TODO Auto-generated constructor stub
