@@ -1,6 +1,7 @@
 package GDSC.realWorld.service;
 
 import GDSC.realWorld.domain.UserDTO;
+import GDSC.realWorld.entity.Follow;
 import GDSC.realWorld.entity.User;
 import GDSC.realWorld.exception.UserNotFoundException;
 import GDSC.realWorld.repository.UserRepository;
@@ -66,8 +67,13 @@ public class UserService {
     public void followUser(String usernameToFollow, String followerUsername) {
         User userToFollow = findByUsername(usernameToFollow);
         User follower = findByUsername(followerUsername);
+    
+        Follow follow = new Follow();
+        follow.setFollower(follower);
+        follow.setFollowed(userToFollow);
+    
 
-        follower.getFollowing().add(userToFollow);
+        follower.getFollowing().add(follow);
         save(follower);
     }
 

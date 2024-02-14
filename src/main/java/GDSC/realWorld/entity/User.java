@@ -45,24 +45,23 @@ public class User {
     public void setImage(String image) {
         this.image = image;
     }
-    
-    private List<User> following = new ArrayList<>();
-    //DB에는 List 형식의 열을 생성하지 못함
 
-    public List<User> getFollowing() {
+    
+    @OneToMany(mappedBy = "follower")
+    private List<Follow> following = new ArrayList<>();
+    public List<Follow> getFollowing() {
         return following;
     }
 
-    public void addFollowing(User user) {
-        following.add(user);
+    public void addFollowing(Follow follow) {
+        following.add(follow);
     }
 
-    public void removeFollowing(User user) {
-        following.remove(user);
+    public void removeFollowing(Follow follow) {
+        following.remove(follow);
     }
 
     public User(String email2, String password2) {
         //TODO Auto-generated constructor stub
     }
-
 }
