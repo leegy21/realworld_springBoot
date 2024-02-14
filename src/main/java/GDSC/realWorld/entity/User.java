@@ -46,7 +46,6 @@ public class User {
         this.image = image;
     }
 
-    
     @OneToMany(mappedBy = "follower")
     private List<Follow> following = new ArrayList<>();
     public List<Follow> getFollowing() {
@@ -60,6 +59,7 @@ public class User {
     public void removeFollowing(Follow follow) {
         following.remove(follow);
     }
+
 
     public User(String email2, String password2) {
         //TODO Auto-generated constructor stub
