@@ -112,17 +112,10 @@ public class ArticleController {
     }
 
     @PostMapping("/{slug}/comments")
-    public ResponseEntity addCommentToArticle(@PathVariable String slug, @RequestBody CommentWrapper commentWrapper) {
-        CommentDTO commentDTO = commentWrapper.getComment();
-
+    public ResponseEntity addCommentToArticle(@PathVariable String slug, @RequestBody Map<String, Object> requestBody) {
         try {
-            Comment savedComment = commentService.addCommentToArticle(slug, commentDTO);
-            CommentDTO savedCommentDTO = new CommentDTO(savedComment);
-            //CommentDTO를 요청에서 받는데 새로 CommentDTO를 만드는 이유가 무엇인지?
-            Map<String, CommentDTO> response = new HashMap<>();
-            response.put("comment", savedCommentDTO);
-            return new ResponseEntity(savedComment, HttpStatus.CREATED);
-        } catch (ArticleNotFoundException e) {
+            return new ResponseEntity(requestBody, HttpStatus.CREATED);
+        } catch (Exception e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
@@ -145,9 +138,8 @@ public class ArticleController {
     @DeleteMapping("/{slug}/comments/{id}")
     public ResponseEntity deleteComment(@PathVariable String slug) {
         try {
-            Article foundArticle = articleService.findArticleBySlug(slug);
-            articleService.deleteArticle(foundArticle);
-            //Comment를 지워야 하는데 Article을 삭제해버림
+            Comment foundComment = commentService.findCommentBySlug(slug);
+            commentService.deleteComment(foundComment);
             return new ResponseEntity(HttpStatus.OK);
         } catch (ArticleNotFoundException e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
