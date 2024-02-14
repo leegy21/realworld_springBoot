@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import lombok.Setter;
 @Entity
 @Setter @Getter
 @RequiredArgsConstructor
+@Table(name = "Follow")
 public class Follow {
     @Id
     @GeneratedValue
@@ -24,4 +26,5 @@ public class Follow {
     @ManyToOne
     @JoinColumn(name = "followed_id")
     private User followed;
+
 }
