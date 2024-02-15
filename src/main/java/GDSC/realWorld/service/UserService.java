@@ -8,7 +8,6 @@ import GDSC.realWorld.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +18,6 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     public void save(User user) {
         userRepository.save(user);
@@ -54,7 +52,7 @@ public class UserService {
     public User getMemberByEmailAndPassword(String email, String password) {
         User user = userRepository.findUserByEmail(email);
 
-        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+        if (user != null && user.getPassword().equals(password)) {
             return user;
         } else {
             return null;

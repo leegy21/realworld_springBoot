@@ -1,7 +1,9 @@
 package GDSC.realWorld.entity;
 
 import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -10,9 +12,10 @@ import java.util.Objects;
 @Embeddable
 @Getter
 @Setter
+@NoArgsConstructor
 public class ArticleTagId implements Serializable {
-    private Long articleId;
-    private Long tagId;
+    public Long articleId;
+    public Long tagId;
 
     @Override
     public boolean equals(Object o) {
@@ -25,5 +28,10 @@ public class ArticleTagId implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(articleId, tagId);
+    }
+
+    public ArticleTagId(Long articleId, Long tagId) {
+        this.articleId = articleId;
+        this.tagId = tagId;
     }
 }

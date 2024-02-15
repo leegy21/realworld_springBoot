@@ -24,12 +24,14 @@ public class ArticleService {
     private final ArticleTagRepository articleTagRepository;
     private final UserService userService;
 
+    @Transactional
     public Article createArticle(ArticleDTO articleDTO, User user) {
         Article article = new Article(articleDTO, user);
         articleRepository.save(article);
         return article;
     }
 
+    @Transactional
     public void deleteArticle(Article article) {
         articleRepository.delete(article);
     }
@@ -42,10 +44,10 @@ public class ArticleService {
     public void updateArticle(Article article, ArticleDTO articleDTO, String slug) {
         if (articleDTO.getTitle() != null) {
             article.setSlug(slug);
-            article.setTitle(article.getTitle());
+            article.setTitle(articleDTO.getTitle());
         }
         if (articleDTO.getDescription() != null) {
-            article.setDescription(article.getDescription());
+            article.setDescription(articleDTO.getDescription());
         }
         if (articleDTO.getBody() != null) {
             article.setBody(articleDTO.getBody());
