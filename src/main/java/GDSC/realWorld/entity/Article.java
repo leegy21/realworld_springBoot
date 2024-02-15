@@ -1,6 +1,7 @@
 package GDSC.realWorld.entity;
 
 import GDSC.realWorld.domain.ArticleDTO;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.List;
 public class Article {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false)
@@ -36,7 +37,8 @@ public class Article {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ArticleTags> articleTags;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -47,6 +49,7 @@ public class Article {
         this.title = articleDTO.getTitle();
         this.description = articleDTO.getDescription();
         this.body = articleDTO.getBody();
+        this.slug = articleDTO.getSlug();
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         this.user = user;

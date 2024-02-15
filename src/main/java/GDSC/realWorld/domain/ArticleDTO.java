@@ -4,11 +4,13 @@ import GDSC.realWorld.entity.Article;
 import GDSC.realWorld.entity.Tag;
 import GDSC.realWorld.entity.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@NoArgsConstructor
 @Getter
 @Setter
 public class ArticleDTO {

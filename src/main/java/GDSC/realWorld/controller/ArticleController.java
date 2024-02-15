@@ -6,6 +6,7 @@ import GDSC.realWorld.domain.CommentDTO;
 import GDSC.realWorld.domain.CommentWrapper;
 import GDSC.realWorld.entity.*;
 import GDSC.realWorld.exception.ArticleNotFoundException;
+import GDSC.realWorld.login.SessionConst;
 import GDSC.realWorld.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -33,7 +34,7 @@ public class ArticleController {
     private final CommentService commentService;
     private final FavoriteService favoriteService;
 
-    @GetMapping("/articles")
+    @GetMapping
     public ResponseEntity<Page<ArticleDTO>> getArticles(
             @RequestParam(required = false) String tagName,
             @RequestParam(required = false) String username,
@@ -55,8 +56,8 @@ public class ArticleController {
         HttpSession session = request.getSession(false);
         //세션에 Username를 담도록 해야됨
 
-        String username = (String) session.getAttribute("user");
-        User findUser = userService.findByUsername(username);
+        User user = (User) session.getAttribute(SessionConst.LOGIN_USER);
+        User findUser = userService.findByUsername(user.getUsername());
 
         Article article = articleService.createArticle(articleWrapper.getArticle(), findUser);
 
@@ -93,7 +94,7 @@ public class ArticleController {
             ArticleDTO articleResponse = new ArticleDTO(foundArticle, articleTagService.findTagNameListByArticle(foundArticle));
             Map<String, Object> response = new HashMap<>();
             response.put("article", articleResponse);
-            return new ResponseEntity(foundArticle, HttpStatus.OK);
+            return new ResponseEntity(response, HttpStatus.OK);
         } catch (ArticleNotFoundException e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }

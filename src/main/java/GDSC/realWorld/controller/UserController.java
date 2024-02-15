@@ -1,6 +1,5 @@
 package GDSC.realWorld.controller;
 
-import GDSC.realWorld.domain.UserDTO;
 import GDSC.realWorld.domain.UserWrapper;
 import GDSC.realWorld.entity.User;
 import GDSC.realWorld.exception.UserNotFoundException;
@@ -8,7 +7,6 @@ import GDSC.realWorld.login.LoginForm;
 import GDSC.realWorld.login.SessionConst;
 import GDSC.realWorld.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Member;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,8 +43,8 @@ public class UserController {
         }
     }
 
-    @GetMapping("/profiles")
-    public ResponseEntity getProfile(@RequestParam String username) {
+    @GetMapping("/profiles/{username}")
+    public ResponseEntity getProfile(@PathVariable String username) {
         try {
             User user = userService.findByUsername(username);
             Map<String, Object> profile = new HashMap<>();
@@ -64,12 +61,11 @@ public class UserController {
     }
 
     @PostMapping("/users/login")
-    public ResponseEntity<Object> loginV3(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult, HttpServletRequest request) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+    public ResponseEntity<Object> loginV3(@RequestBody UserWrapper userWrapper, HttpServletRequest request) {
+        String email = userWrapper.getUser().getEmail();
+        String password = userWrapper.getUser().getPassword();
 
-        User loginMember = userService.getMemberByEmailAndPassword(form.getEmail(), form.getPassword());
+        User loginMember = userService.getMemberByEmailAndPassword(email, password);
 
         if (loginMember == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -82,25 +78,26 @@ public class UserController {
     }
 
 
-   @PostMapping("/profiles/{username}/follow")
-   public ResponseEntity followUser(@PathVariable String username, @RequestParam String usernameToFollow) {
-       try {
-           userService.followUser(username, usernameToFollow);
+    @PostMapping("/profiles/{username}/follow")
+    public ResponseEntity followUser(@PathVariable String username, @RequestParam String usernameToFollow) {
+        try {
+            userService.followUser(username, usernameToFollow);
 
-           return getProfile(usernameToFollow);
-       } catch (UserNotFoundException e) {
-           return ResponseEntity.notFound().build();
-       }
-   }
-   @DeleteMapping("/profiles/{username}/follow")
-   public ResponseEntity unfollowUser(@PathVariable String username, @RequestParam String usernameToUnfollow) {
-       try {
-           userService.unfollowUser(username, usernameToUnfollow);
+            return getProfile(usernameToFollow);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-           return getProfile(username);
-       } catch (UserNotFoundException e) {
-           return ResponseEntity.notFound().build();
-       }
-   }
+    @DeleteMapping("/profiles/{username}/follow")
+    public ResponseEntity unfollowUser(@PathVariable String username, @RequestParam String usernameToUnfollow) {
+        try {
+            userService.unfollowUser(username, usernameToUnfollow);
+
+            return getProfile(username);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
 
