@@ -40,7 +40,7 @@ public class Comment {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "article_id")
+    @JoinColumn(name = "article_id", nullable = false)
     private Article article;
 
     public Comment(CommentDTO commentDTO, User user) {

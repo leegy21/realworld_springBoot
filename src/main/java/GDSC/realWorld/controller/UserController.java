@@ -82,25 +82,25 @@ public class UserController {
     }
 
 
-//    @PostMapping("/profiles/{username}/follow")
-//    public ResponseEntity followUser(@PathVariable String username, @RequestParam String usernameToFollow) {
-//        try {
-//            userService.followUser(username, usernameToFollow);
-//
-//            return getProfile(usernameToFollow);
-//        } catch (UserNotFoundException e) {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
-//    @DeleteMapping("/profiles/{username}/follow")
-//    public ResponseEntity unfollowUser(@PathVariable String username, @RequestParam String usernameToUnfollow) {
-//        try {
-//            userService.unfollowUser(username, usernameToUnfollow);
-//
-//            return getProfile(username);
-//        } catch (UserNotFoundException e) {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
+   @PostMapping("/profiles/{username}/follow")
+   public ResponseEntity followUser(@PathVariable String username, @RequestParam String usernameToFollow) {
+       try {
+           userService.followUser(username, usernameToFollow);
+
+           return getProfile(usernameToFollow);
+       } catch (UserNotFoundException e) {
+           return ResponseEntity.notFound().build();
+       }
+   }
+   @DeleteMapping("/profiles/{username}/follow")
+   public ResponseEntity unfollowUser(@PathVariable String username, @RequestParam String usernameToUnfollow) {
+       try {
+           userService.unfollowUser(username, usernameToUnfollow);
+
+           return getProfile(username);
+       } catch (UserNotFoundException e) {
+           return ResponseEntity.notFound().build();
+       }
+   }
 }
 
